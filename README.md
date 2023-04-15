@@ -37,3 +37,6 @@ Data source
 Two csv files are found in website kaggle (link below) and they will be merged to create different tables.
 Link of data source:
 https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews
+
+
+![UML Diagram](documents/BookDotNextUML.pdf)
