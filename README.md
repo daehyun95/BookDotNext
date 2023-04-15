@@ -39,4 +39,4 @@ Link of data source:
 https://www.kaggle.com/datasets/mohamedbakhet/amazon-books-reviews
 
 
-![UML Diagram](documents/BookDotNextUML.pdf)
+![UML Diagram](Document/BookDotNextUML.pdf)
