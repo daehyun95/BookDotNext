@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="zhangyunfei" created="Tue Apr 04 12:13:42 PDT 2023" guiVersion="5.17.2.4" id="1680652469339" licenseCode="CLP1DNORTH79960591EX" name="GnpBooks" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata8">
+<Record fieldDelimiter=";" name="bookinfo" recordDelimiter="\n" type="delimited">
+<Field name="PublishedDate" size="10" type="integer"/>
+<Field name="Count" size="19" type="long"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata4">
+<Record fieldDelimiter=";" name="bookinfo" previewAttachmentCharset="UTF-8" recordDelimiter="\n" type="delimited">
+<Field name="PublishedDate" size="10" type="integer"/>
+<Field name="Count" size="19" type="long"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="," label="united-states-gnp-gross-national-product" name="Gnp_Books" previewAttachment="${DATAIN_DIR}/united-states-gnp-gross-national-product.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="9" type="delimited">
+<Field format="MM/dd/yyyy" name="Year" type="date"/>
+<Field name="GNP" type="decimal"/>
+<Field name="Field3" type="integer"/>
+<Field eofAsDelimiter="true" name="Field4" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata6">
+<Record fieldDelimiter="," label="united-states-gnp-gross-national-product" name="Gnp_Books" previewAttachment="${DATAIN_DIR}/united-states-gnp-gross-national-product.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="9" type="delimited">
+<Field format="MM/dd/yy" name="Year" type="date"/>
+<Field name="Gnp" type="decimal"/>
+<Field name="Field3" type="integer"/>
+<Field eofAsDelimiter="true" name="Field4" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata7">
+<Record fieldDelimiter="," label="united-states-gnp-gross-national-product" name="GNP_Books" previewAttachment="${DATAIN_DIR}/united-states-gnp-gross-national-product.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="9" type="delimited">
+<Field name="Year" type="integer"/>
+<Field name="GNP" type="decimal"/>
+<Field name="Field3" type="integer"/>
+<Field eofAsDelimiter="true" name="Field4" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata10">
+<Record fieldDelimiter="|" name="GNP_Books" previewAttachmentCharset="UTF-8" recordDelimiter="\n" type="delimited">
+<Field name="Year" type="integer"/>
+<Field name="GNP" type="decimal"/>
+<Field name="Count" type="integer"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata1">
+<Record fieldDelimiter="," label="united-states-gnp-gross-national-product" name="GNP_US" previewAttachment="${DATAIN_DIR}/united-states-gnp-gross-national-product.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="9" type="delimited">
+<Field format="MM/dd/yyyy" name="Year" type="date"/>
+<Field name="GNP" type="decimal"/>
+<Field name="Field3" type="integer"/>
+<Field eofAsDelimiter="true" name="Field4" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata2">
+<Record fieldDelimiter="," label="united-states-gnp-gross-national-product" name="GNP_US" previewAttachment="${DATAIN_DIR}/united-states-gnp-gross-national-product.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="9" type="delimited">
+<Field format="MM/dd/yy" name="year" type="date"/>
+<Field name="GNP" type="decimal"/>
+<Field name="Field3" type="integer"/>
+<Field eofAsDelimiter="true" name="Field4" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata9">
+<Record fieldDelimiter="," label="united-states-gnp-gross-national-product" name="GNP_US" previewAttachment="${DATAIN_DIR}/united-states-gnp-gross-national-product.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="9" type="delimited">
+<Field name="Year" type="integer"/>
+<Field name="GNP" type="decimal"/>
+<Field name="Field3" type="integer"/>
+<Field eofAsDelimiter="true" name="Field4" type="number"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata5">
+<Record fieldDelimiter="|" name="Join" previewAttachmentCharset="UTF-8" recordDelimiter="\n" type="delimited">
+<Field name="YEAR" type="integer"/>
+<Field name="GNP" type="decimal"/>
+<Field name="COUNT" type="long"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata3">
+<Record fieldDelimiter="|" name="recordName1" recordDelimiter="\n" type="delimited"/>
+<Sql connection="JDBC0" sqlOptimization="true" sqlQuery="Select PublishedDate, Count(*) as Count&#10;from BookDotNext_0.BookInfo&#10;where PublishedDate&gt;=1980 and PublishedDate&lt;=2022&#10;Group by PublishedDate&#10;Order by PublishedDate;" unknownJdbcTypesAsString="true"/>
+</Metadata>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/BookDotNext_0" id="JDBC0" jdbcSpecific="MYSQL" name="NewConnection" password="12345678" type="JDBC" user="root"/>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node dataPolicy="controlled" dbConnection="JDBC0" guiName="DatabaseReader" guiX="179" guiY="299" id="DATABASE_READER1" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[Select PublishedDate, COUNT(*) AS Count
+from BookDotNext_0.BookInfo
+where PublishedDate>=1980 and PublishedDate<=2022
+Group by PublishedDate
+Order by PublishedDate]]></attr>
+</Node>
+<Node dbConnection="JDBC0" dbTable="GNPBOOKS" fieldMap="$YEAR:=YEAR;$GNP:=GNP;$COUNT:=COUNT;" guiName="DatabaseWriter" guiX="675" guiY="217" id="DATABASE_WRITER" type="DB_OUTPUT_TABLE"/>
+<Node guiName="ExtHashJoin" guiX="419" guiY="217" id="EXT_HASH_JOIN" joinKey="$Year=$PublishedDate" type="EXT_HASH_JOIN">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.YEAR = $in.0.Year;
+	$out.0.GNP = $in.0.GNP;
+	$out.0.COUNT = $in.1.Count;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node dataPolicy="controlled" fileURL="${DATAIN_DIR}/united-states-gnp-gross-national-product.csv" guiName="FlatFileReader" guiX="179" guiY="149" id="FLAT_FILE_READER" skipLeadingBlanks="false" skipRows="1" trim="true" type="FLAT_FILE_READER"/>
+<Edge fromNode="DATABASE_READER1:0" guiBendpoints="" guiRouter="Manhattan" id="Edge3" inPort="Port 1 (slave)" metadata="Metadata4" outPort="Port 0 (out)" toNode="EXT_HASH_JOIN:1"/>
+<Edge fromNode="EXT_HASH_JOIN:0" guiBendpoints="" guiRouter="Manhattan" id="Edge4" inPort="Port 0 (in)" metadata="Metadata5" outPort="Port 0 (out)" toNode="DATABASE_WRITER:0"/>
+<Edge fromNode="FLAT_FILE_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge0" inPort="Port 0 (driver)" metadata="Metadata9" outPort="Port 0 (output)" toNode="EXT_HASH_JOIN:0"/>
+</Phase>
+<Phase number="1">
+<Node dbConnection="JDBC0" guiName="DatabaseReader" guiX="292" guiY="439" id="DATABASE_READER2" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[SELECT GNPBOOKS.YEAR, GNPBOOKS.GNP, GNPBOOKS.COUNT FROM GNPBOOKS]]></attr>
+</Node>
+<Node existingSheetsActions="REMOVE_SHEETS" fileURL="${DATAOUT_DIR}/GNP_Books.xlsx" guiName="SpreadsheetDataWriter" guiX="546" guiY="439" id="SPREADSHEET_DATA_WRITER" type="SPREADSHEET_WRITER" writeMode="OVERWRITE_SHEET_IN_MEMORY"/>
+<Edge fromNode="DATABASE_READER2:0" guiBendpoints="" guiRouter="Manhattan" id="Edge5" inPort="Port 0 (input)" metadata="Metadata10" outPort="Port 0 (out)" toNode="SPREADSHEET_DATA_WRITER:0"/>
+</Phase>
+</Graph>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="zhangyunfei" created="Tue Apr 04 12:13:42 PDT 2023" guiVersion="6.0.0.21" id="1680648017201" licenseCode="CLP1DNORTH79960591EX" name="GdpVSBooks" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata1">
+<Record fieldDelimiter=";" name="bookinfo" previewAttachmentCharset="UTF-8" recordDelimiter="\n" type="delimited">
+<Field name="PublishedDate" size="10" type="integer"/>
+<Field name="Count" size="19" type="long"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata2">
+<Record fieldDelimiter="," label="Economy of the United States" name="GDP_US" previewAttachment="${DATAIN_DIR}/Economy of the United States.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
+<Field name="_" type="integer"/>
+<Field label="Year" name="Year" type="integer"/>
+<Field label="GDP (in Bil. US$PPP)" name="GDP_in_Bil" scale="1" type="decimal"/>
+<Field label="GDP per capita (in US$ PPP)" name="GDP_per_capita_in_US_PPP" scale="1" type="decimal"/>
+<Field label="GDP (in Bil. US$nominal)" name="GDP_in_Bil_US_nominal" scale="1" type="decimal"/>
+<Field label="GDP per capita (in US$ nominal)" name="GDP_per_capita_in_US_nominal" scale="1" type="decimal"/>
+<Field label="GDP growth (real)" name="GDP_growth_real" type="string"/>
+<Field label="Inflation rate (in Percent)" name="Inflation_rate_in_Percent" type="string"/>
+<Field label="Unemployment (in Percent)" name="Unemployment_in_Percent" type="string"/>
+<Field eofAsDelimiter="true" label="Government debt (in % of GDP)" name="Government_debt_in_of_GDP" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata4">
+<Record fieldDelimiter=";" name="GDPBOOKS" recordDelimiter="\n" type="delimited">
+<Field name="YEAR" size="10" type="integer"/>
+<Field length="10" name="GDP" scale="0" size="10" type="decimal"/>
+<Field name="COUNT" type="string"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata5">
+<Record fieldDelimiter=";" name="GDPBOOKS" previewAttachmentCharset="UTF-8" recordDelimiter="\n" type="delimited">
+<Field name="YEAR" size="10" type="integer"/>
+<Field length="10" name="GDP" scale="0" size="10" type="decimal"/>
+<Field name="COUNT" type="integer"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata3">
+<Record fieldDelimiter="|" name="Join" recordDelimiter="\n" type="delimited">
+<Field name="Year" type="integer"/>
+<Field name="Gdp" type="decimal"/>
+<Field name="BookCount" type="long"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="," label="Economy of the United States" name="US_GDP" previewAttachment="${DATAIN_DIR}/Economy of the United States.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
+<Field name="_" type="integer"/>
+<Field label="Year" name="Year" type="integer"/>
+<Field label="GDP (in Bil. US$PPP)" name="GDP_in_Bil_US_PPP" scale="1" type="decimal"/>
+<Field label="GDP per capita (in US$ PPP)" name="GDP_per_capita_in_US_PPP" scale="1" type="decimal"/>
+<Field label="GDP (in Bil. US$nominal)" name="GDP_in_Bil_US_nominal" scale="1" type="decimal"/>
+<Field label="GDP per capita (in US$ nominal)" name="GDP_per_capita_in_US_nominal" scale="1" type="decimal"/>
+<Field label="GDP growth (real)" name="GDP_growth_real" type="string"/>
+<Field label="Inflation rate (in Percent)" name="Inflation_rate_in_Percent" type="string"/>
+<Field label="Unemployment (in Percent)" name="Unemployment_in_Percent" type="string"/>
+<Field eofAsDelimiter="true" label="Government debt (in % of GDP)" name="Government_debt_in_of_GDP" type="string"/>
+</Record>
+</Metadata>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/database" id="JDBC2" jdbcSpecific="MYSQL" name="book" password="wjn19911007" type="JDBC" user="root"/>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/BookDotNext_2" id="JDBC3" jdbcSpecific="MYSQL" name="book1" password="wjn19911007" type="JDBC" user="root"/>
+<Connection database="MYSQL" dbURL="jdbc:mysql://hostname:3306/database" id="JDBC0" jdbcSpecific="MYSQL" name="NewConnection" password="12345678" type="JDBC" user="root"/>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/BookDotNext_0" id="JDBC1" jdbcSpecific="MYSQL" name="NewConnection" password="12345678" type="JDBC" user="root"/>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node dataPolicy="controlled" dbConnection="JDBC1" guiName="DatabaseReader" guiX="181" guiY="270" id="DATABASE_READER" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[Select PublishedDate, Count(*) as Count
+from BookDotNext_0.BookInfo
+where PublishedDate>=1980 and PublishedDate<=2022
+Group by PublishedDate
+Order by PublishedDate;]]></attr>
+</Node>
+<Node dbConnection="JDBC3" dbTable="GDPBOOKS" fieldMap="$Year:=YEAR;$Gdp:=GDP;$BookCount:=COUNT;" guiName="DatabaseWriter" guiX="675" guiY="206" id="DATABASE_WRITER" type="DB_OUTPUT_TABLE"/>
+<Node guiName="ExtHashJoin" guiX="422" guiY="206" id="EXT_HASH_JOIN" joinKey="$Year=$PublishedDate" type="EXT_HASH_JOIN">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.Year = $in.0.Year;
+	$out.0.Gdp = $in.0.GDP_in_Bil;
+	$out.0.BookCount = $in.1.Count;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node fileURL="${DATAIN_DIR}/Economy of the United States.csv" guiName="FlatFileReader" guiX="181" guiY="143" id="FLAT_FILE_READER" trim="true" type="FLAT_FILE_READER"/>
+<Edge fromNode="DATABASE_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge1" inPort="Port 1 (slave)" metadata="Metadata1" outPort="Port 0 (out)" toNode="EXT_HASH_JOIN:1"/>
+<Edge fromNode="EXT_HASH_JOIN:0" guiBendpoints="" guiRouter="Manhattan" id="Edge2" inPort="Port 0 (in)" metadata="Metadata3" outPort="Port 0 (out)" toNode="DATABASE_WRITER:0"/>
+<Edge fromNode="FLAT_FILE_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge0" inPort="Port 0 (driver)" metadata="Metadata2" outPort="Port 0 (output)" toNode="EXT_HASH_JOIN:0"/>
+</Phase>
+<Phase number="1">
+<Node dbConnection="JDBC1" guiName="DatabaseReader" guiX="295" guiY="423" id="DATABASE_READER1" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[SELECT GDPBOOKS.YEAR, GDPBOOKS.GDP, GDPBOOKS.COUNT FROM GDPBOOKS]]></attr>
+</Node>
+<Node existingSheetsActions="REMOVE_SHEETS" fileURL="${DATAOUT_DIR}/Gdp_Books.xlsx" guiName="SpreadsheetDataWriter" guiX="542" guiY="423" id="SPREADSHEET_DATA_WRITER" type="SPREADSHEET_WRITER" writeMode="OVERWRITE_SHEET_IN_MEMORY"/>
+<Edge fromNode="DATABASE_READER1:0" guiBendpoints="" guiRouter="Manhattan" id="Edge3" inPort="Port 0 (input)" metadata="Metadata5" outPort="Port 0 (out)" toNode="SPREADSHEET_DATA_WRITER:0"/>
+</Phase>
+</Graph>

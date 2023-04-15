@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="zhangyunfei" created="Tue Apr 04 12:13:42 PDT 2023" guiVersion="5.17.2.4" id="1680660436086" licenseCode="CLP1DNORTH79960591EX" name="GDIBooks" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata1">
+<Record fieldDelimiter=";" name="bookinfo" recordDelimiter="\n" type="delimited">
+<Field name="PublishedDate" size="10" type="integer"/>
+<Field name="Count" size="19" type="long"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata3">
+<Record fieldDelimiter=";" name="MOBILEBOOKS" recordDelimiter="\n" type="delimited">
+<Field name="YEAR" size="10" type="integer"/>
+<Field length="10" name="MOBILERate" scale="0" size="10" type="decimal"/>
+<Field name="COUNT" size="10" type="integer"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="\t" name="MobileUsage" previewAttachment="${DATAIN_DIR}/MobileUsage.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\r\n" skipSourceRows="1" type="delimited">
+<Field name="Year" type="integer"/>
+<Field eofAsDelimiter="true" name="Rate" scale="1" type="decimal"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata2">
+<Record fieldDelimiter="|" name="recordName1" recordDelimiter="\n" type="delimited">
+<Field name="Year" type="integer"/>
+<Field name="MobileRate" type="decimal"/>
+<Field name="Count" type="long"/>
+</Record>
+</Metadata>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/BookDotNext_0" id="JDBC0" jdbcSpecific="MYSQL" name="NewConnection" password="12345678" type="JDBC" user="root"/>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node dbConnection="JDBC0" guiName="DatabaseReader" guiX="186" guiY="277" id="DATABASE_READER" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[Select PublishedDate, COUNT(*) AS Count
+from BookDotNext_0.BookInfo
+where PublishedDate>=1980 and PublishedDate<=2022
+Group by PublishedDate
+Order by PublishedDate]]></attr>
+</Node>
+<Node dbConnection="JDBC0" dbTable="MOBILEBOOKS" fieldMap="$Year:=YEAR;$MobileRate:=MOBILERate;$Count:=COUNT;" guiName="DatabaseWriter" guiX="669" guiY="213" id="DATABASE_WRITER" type="DB_OUTPUT_TABLE"/>
+<Node guiName="ExtHashJoin" guiX="414" guiY="213" id="EXT_HASH_JOIN" joinKey="$Year=$PublishedDate" type="EXT_HASH_JOIN">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.Year = $in.0.Year;
+	$out.0.MobileRate = $in.0.Rate;
+	$out.0.Count = $in.1.Count;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node dataPolicy="controlled" fileURL="${DATAIN_DIR}/MobileUsage.csv" guiName="FlatFileReader" guiX="186" guiY="159" id="FLAT_FILE_READER" trim="true" type="FLAT_FILE_READER"/>
+<Edge fromNode="DATABASE_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge1" inPort="Port 1 (slave)" metadata="Metadata1" outPort="Port 0 (out)" toNode="EXT_HASH_JOIN:1"/>
+<Edge fromNode="EXT_HASH_JOIN:0" guiBendpoints="" guiRouter="Manhattan" id="Edge3" inPort="Port 0 (in)" metadata="Metadata2" outPort="Port 0 (out)" toNode="DATABASE_WRITER:0"/>
+<Edge fromNode="FLAT_FILE_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge2" inPort="Port 0 (driver)" metadata="Metadata0" outPort="Port 0 (output)" toNode="EXT_HASH_JOIN:0"/>
+</Phase>
+<Phase number="1">
+<Node dbConnection="JDBC0" guiName="DatabaseReader" guiX="332" guiY="409" id="DATABASE_READER1" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[SELECT MOBILEBOOKS.YEAR, MOBILEBOOKS.MOBILERate, MOBILEBOOKS.COUNT FROM MOBILEBOOKS]]></attr>
+</Node>
+<Node existingSheetsActions="REMOVE_SHEETS" fileURL="${DATAOUT_DIR}/Mobile_Books.xlsx" guiName="SpreadsheetDataWriter" guiX="581" guiY="409" id="SPREADSHEET_DATA_WRITER" type="SPREADSHEET_WRITER" writeMode="OVERWRITE_SHEET_IN_MEMORY">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mapping>
+    <globalAttributes>
+        <orientation>VERTICAL</orientation>
+        <step>1</step>
+        <writeHeader>true</writeHeader>
+    </globalAttributes>
+    <defaultSkip>1</defaultSkip>
+    <headerGroups>
+        <headerGroup skip="1">
+            <cloverField>YEAR</cloverField>
+            <headerRanges>
+                <headerRange begin="A1"/>
+            </headerRanges>
+        </headerGroup>
+        <headerGroup skip="1">
+            <cloverField>MOBILERate</cloverField>
+            <headerRanges>
+                <headerRange begin="B1"/>
+            </headerRanges>
+        </headerGroup>
+        <headerGroup skip="1">
+            <cloverField>COUNT</cloverField>
+            <headerRanges>
+                <headerRange begin="C1"/>
+            </headerRanges>
+        </headerGroup>
+    </headerGroups>
+</mapping>
+]]></attr>
+</Node>
+<Edge fromNode="DATABASE_READER1:0" guiBendpoints="" guiRouter="Manhattan" id="Edge4" inPort="Port 0 (input)" metadata="Metadata3" outPort="Port 0 (out)" toNode="SPREADSHEET_DATA_WRITER:0"/>
+</Phase>
+</Graph>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="wujiena" created="Thu Apr 06 17:28:28 PDT 2023" guiVersion="6.0.0.21" id="1680894762983" licenseCode="CLP1DNORTH16227851EX" name="comparison" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata5">
+<Record fieldDelimiter=";" name="comparison" previewAttachmentCharset="UTF-8" recordDelimiter="\n" type="delimited">
+<Field delimiter=";" name="Year" type="integer"/>
+<Field delimiter=";" name="Sale_paperbook_million" type="decimal"/>
+<Field delimiter=";" name="Sale_ebook_million" type="decimal"/>
+<Field name="Rate_smartphone" type="decimal"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata1">
+<Record fieldDelimiter="," name="ebook" previewAttachmentCharset="UTF-8" recordDelimiter="\n" type="delimited">
+<Field delimiter="," locale="en.US" name="Year" type="integer"/>
+<Field delimiter="\r\n" name="Number_of_ebooks_sold" type="integer"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata3">
+<Record fieldDelimiter=";" name="ebook" recordDelimiter="\n" type="delimited">
+<Field delimiter=";" name="Year" type="integer"/>
+<Field name="Sale" type="decimal"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="," name="paperbook" recordDelimiter="\n" type="delimited">
+<Field delimiter="," format="excel:yyyy" locale="en.US" name="Year" type="date"/>
+<Field delimiter="\r\n" name="Number_of_print_books_sold" type="integer"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata4">
+<Record fieldDelimiter=";" name="paperbook" recordDelimiter="\n" type="delimited">
+<Field delimiter=";" name="Year" type="integer"/>
+<Field name="Sale" type="decimal"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata2">
+<Record fieldDelimiter=";" name="recordName1" recordDelimiter="\n" type="delimited">
+<Field delimiter=";" name="Year" type="integer"/>
+<Field name="Rate" type="decimal"/>
+</Record>
+</Metadata>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node guiName="ExtHashJoin" guiX="925" guiY="488" id="EXT_HASH_JOIN1" joinKey="$Year=$Year#$Year=$Year" type="EXT_HASH_JOIN">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.Year = $in.0.Year;
+	$out.0.Sale_paperbook_million = $in.2.Sale;
+	$out.0.Sale_ebook_million = $in.1.Sale;
+	$out.0.Rate_smartphone = $in.0.Rate;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node fileURL="${DATAIN_DIR}/smartphone.xlsx" guiName="SpreadsheetDataReader" guiX="544" guiY="393" id="SPREADSHEET_DATA_READER" skipSourceRecords="1" type="SPREADSHEET_READER"/>
+<Node fileURL="${DATAIN_DIR}/ebook.xlsx" guiName="SpreadsheetDataReader" guiX="550" guiY="535" id="SPREADSHEET_DATA_READER1" skipSourceRecords="1" type="SPREADSHEET_READER"/>
+<Node fileURL="${DATAIN_DIR}/paperbook.xlsx" guiName="SpreadsheetDataReader" guiX="550" guiY="703" id="SPREADSHEET_DATA_READER2" skipSourceRecords="1" type="SPREADSHEET_READER"/>
+<Node existingSheetsActions="REMOVE_SHEETS" fileURL="${DATAOUT_DIR}/comparison.xlsx" guiName="SpreadsheetDataWriter" guiX="1203" guiY="488" id="SPREADSHEET_DATA_WRITER" type="SPREADSHEET_WRITER" writeMode="OVERWRITE_SHEET_IN_MEMORY"/>
+<Edge fromNode="EXT_HASH_JOIN1:0" guiBendpoints="" guiRouter="Manhattan" id="Edge6" inPort="Port 0 (input)" metadata="Metadata5" outPort="Port 0 (out)" toNode="SPREADSHEET_DATA_WRITER:0"/>
+<Edge fromNode="SPREADSHEET_DATA_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge3" inPort="Port 0 (driver)" metadata="Metadata2" outPort="Port 0 (output)" toNode="EXT_HASH_JOIN1:0"/>
+<Edge fromNode="SPREADSHEET_DATA_READER1:0" guiBendpoints="" guiRouter="Manhattan" id="Edge4" inPort="Port 1 (slave)" metadata="Metadata3" outPort="Port 0 (output)" toNode="EXT_HASH_JOIN1:1"/>
+<Edge fromNode="SPREADSHEET_DATA_READER2:0" guiBendpoints="" guiRouter="Manhattan" id="Edge5" inPort="Port 2 (slave)" metadata="Metadata4" outPort="Port 0 (output)" toNode="EXT_HASH_JOIN1:2"/>
+</Phase>
+</Graph>

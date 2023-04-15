@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Graph author="jaebutler" created="Thu Apr 06 16:44:21 PDT 2023" guiVersion="6.0.0.21" id="1680827482223" licenseCode="CLP1DNORTH88271864EX" name="movieVSbook" showComponentDetails="true">
+<Global>
+<Metadata id="Metadata3">
+<Record fieldDelimiter=";" name="bookinfo" recordDelimiter="\n" type="delimited">
+<Field name="PublishedDate" size="10" type="integer"/>
+<Field name="Count" size="19" type="long"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata6">
+<Record fieldDelimiter="," label="statistic_id187122_movie-releases-in-the-us-canada-2000-2022" name="FinalOFMOVIERELEASED" previewAttachment="${DATAIN_DIR}/statistic_id187122_movie-releases-in-the-us-canada-2000-2022.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\n" skipSourceRows="1" type="delimited">
+<Field name="Year" type="integer"/>
+<Field eofAsDelimiter="true" name="Number_of_Movie_released" type="integer"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata4">
+<Record fieldDelimiter="|" name="Join" previewAttachmentCharset="UTF-8" recordDelimiter="\n" type="delimited">
+<Field name="year" type="integer"/>
+<Field name="MovieCount" type="integer"/>
+<Field name="BookCount" type="long"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata1">
+<Record fieldDelimiter="," label="statistic_id187122_movie-releases-in-the-us-canada-2000-2022" name="Movie" previewAttachment="${DATAIN_DIR}/statistic_id187122_movie-releases-in-the-us-canada-2000-2022.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\n" skipSourceRows="2" type="delimited">
+<Field format="yyyy" name="Year" type="date"/>
+<Field eofAsDelimiter="true" name="Number_of_movie_released" type="integer"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata5">
+<Record fieldDelimiter=";" name="MOVIEBOOK" previewAttachmentCharset="UTF-8" recordDelimiter="\n" type="delimited">
+<Field name="YEAR" size="10" type="integer"/>
+<Field name="MOVIECOUNT" size="10" type="integer"/>
+<Field name="COUNT" size="10" type="integer"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata2">
+<Record fieldDelimiter="," label="statistic_id187122_movie-releases-in-the-us-canada-2000-2022" name="MoviesFinal" previewAttachment="${DATAIN_DIR}/statistic_id187122_movie-releases-in-the-us-canada-2000-2022.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\n" skipSourceRows="1" type="delimited">
+<Field format="yyyy" name="Year" type="date"/>
+<Field eofAsDelimiter="true" name="Number_of_movie_released" type="integer"/>
+</Record>
+</Metadata>
+<Metadata id="Metadata0">
+<Record fieldDelimiter="," label="statistic_id187122_movie-releases-in-the-us-canada-2000-2022" name="statistic_id187122_movie_releases_in_the_us_canada_2000_2022" previewAttachment="${DATAIN_DIR}/statistic_id187122_movie-releases-in-the-us-canada-2000-2022.csv" previewAttachmentCharset="UTF-8" quoteChar="both" quotedStrings="false" recordDelimiter="\n" skipSourceRows="2" type="delimited">
+<Field name="Year" type="integer"/>
+<Field eofAsDelimiter="true" name="Number_of_Film_released" type="integer"/>
+</Record>
+</Metadata>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/BookDotNext_2" id="JDBC2" jdbcSpecific="MYSQL" name="book" password="wjn19911007" type="JDBC" user="root"/>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/BookDotNext_0" id="JDBC3" jdbcSpecific="MYSQL" name="book2" password="wjn19911007" type="JDBC" user="root"/>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/BookDotNext_0" id="JDBC0" jdbcSpecific="MYSQL" name="NewConnection" password="Jae324248!" type="JDBC" user="root"/>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/BookDotNext_2" id="JDBC1" jdbcSpecific="MYSQL" name="NewConnection" password="wjn19911007" type="JDBC" user="root"/>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/BookDotNext_0" id="JDBC4" jdbcSpecific="MYSQL" name="NewConnection" password="wjn19911007" type="JDBC" user="root"/>
+<Connection database="MYSQL" dbURL="jdbc:mysql://localhost:3306/BookDotNext_0" id="JDBC5" jdbcSpecific="MYSQL" name="serena" password="wjn19911007" type="JDBC" user="root"/>
+<GraphParameters>
+<GraphParameterFile fileURL="workspace.prm"/>
+</GraphParameters>
+<Dictionary/>
+</Global>
+<Phase number="0">
+<Node dataPolicy="lenient" dbConnection="JDBC5" guiName="DatabaseReader" guiX="27" guiY="255" id="DATABASE_READER" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[Select PublishedDate, Count(*) as Count
+from BookDotNext_0.BookInfo
+where PublishedDate>=2000 and PublishedDate<=2022
+Group by PublishedDate
+Order by PublishedDate]]></attr>
+</Node>
+<Node dbConnection="JDBC4" dbTable="MOVIEBOOK" fieldMap="$year:=YEAR;$MovieCount:=MOVIECOUNT;$BookCount:=COUNT;" guiName="DatabaseWriter" guiX="741" guiY="183" id="DATABASE_WRITER" type="DB_OUTPUT_TABLE"/>
+<Node guiName="ExtHashJoin" guiX="350" guiY="159" id="EXT_HASH_JOIN" joinKey="$Year=$PublishedDate" type="EXT_HASH_JOIN">
+<attr name="transform"><![CDATA[//#CTL2
+
+// Transforms input record into output record.
+function integer transform() {
+	$out.0.year = $in.0.Year;
+	$out.0.MovieCount = $in.0.Number_of_Movie_released;
+	$out.0.BookCount = $in.1.Count;
+
+	return ALL;
+}
+
+// Called during component initialization.
+// function boolean init() {}
+
+// Called during each graph run before the transform is executed. May be used to allocate and initialize resources
+// required by the transform. All resources allocated within this method should be released
+// by the postExecute() method.
+// function void preExecute() {}
+
+// Called only if transform() throws an exception.
+// function integer transformOnError(string errorMessage, string stackTrace) {}
+
+// Called during each graph run after the entire transform was executed. Should be used to free any resources
+// allocated within the preExecute() method.
+// function void postExecute() {}
+
+// Called to return a user-defined error message when an error occurs.
+// function string getMessage() {}
+]]></attr>
+</Node>
+<Node dataPolicy="lenient" fileURL="${DATAIN_DIR}/statistic_id187122_movie-releases-in-the-us-canada-2000-2022.csv" guiName="FlatFileReader" guiX="27" guiY="137" id="FLAT_FILE_READER" quotedStrings="false" skipSourceRows="2" trim="true" type="FLAT_FILE_READER"/>
+<Edge fromNode="DATABASE_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge1" inPort="Port 1 (slave)" metadata="Metadata3" outPort="Port 0 (out)" toNode="EXT_HASH_JOIN:1"/>
+<Edge fromNode="EXT_HASH_JOIN:0" guiBendpoints="" guiRouter="Manhattan" id="Edge2" inPort="Port 0 (in)" metadata="Metadata4" outPort="Port 0 (out)" toNode="DATABASE_WRITER:0"/>
+<Edge fromNode="FLAT_FILE_READER:0" guiBendpoints="" guiRouter="Manhattan" id="Edge0" inPort="Port 0 (driver)" metadata="Metadata6" outPort="Port 0 (output)" toNode="EXT_HASH_JOIN:0"/>
+</Phase>
+<Phase number="1">
+<Node dbConnection="JDBC5" guiName="DatabaseReader" guiX="37" guiY="382" id="DATABASE_READER1" type="DB_INPUT_TABLE">
+<attr name="sqlQuery"><![CDATA[SELECT MOVIEBOOK.YEAR, MOVIEBOOK.MOVIECOUNT, MOVIEBOOK.COUNT FROM MOVIEBOOK]]></attr>
+</Node>
+<Node existingSheetsActions="REMOVE_SHEETS" fileURL="${DATAOUT_DIR}/Movie_Books.xlsx" guiName="SpreadsheetDataWriter" guiX="300" guiY="391" id="SPREADSHEET_DATA_WRITER" type="SPREADSHEET_WRITER" writeMode="OVERWRITE_SHEET_IN_MEMORY">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<mapping>
+    <globalAttributes>
+        <orientation>VERTICAL</orientation>
+        <step>1</step>
+        <writeHeader>true</writeHeader>
+    </globalAttributes>
+    <defaultSkip>1</defaultSkip>
+    <headerGroups>
+        <headerGroup skip="1">
+            <cloverField>YEAR</cloverField>
+            <headerRanges>
+                <headerRange begin="A1"/>
+            </headerRanges>
+        </headerGroup>
+        <headerGroup skip="1">
+            <cloverField>MOVIECOUNT</cloverField>
+            <headerRanges>
+                <headerRange begin="B1"/>
+            </headerRanges>
+        </headerGroup>
+        <headerGroup skip="1">
+            <cloverField>COUNT</cloverField>
+            <headerRanges>
+                <headerRange begin="C1"/>
+            </headerRanges>
+        </headerGroup>
+    </headerGroups>
+</mapping>
+]]></attr>
+</Node>
+<Edge fromNode="DATABASE_READER1:0" guiBendpoints="" guiRouter="Manhattan" id="Edge4" inPort="Port 0 (input)" metadata="Metadata5" outPort="Port 0 (out)" toNode="SPREADSHEET_DATA_WRITER:0"/>
+</Phase>
+</Graph>
